@@ -100,7 +100,7 @@ class ConnectionService {
     const { red, green, blue, time, fog, isLedAuto, brightness } = dummyMode;
     const settingsArray = [];
 
-    settingsArray.push(parseInt(18, 10));
+    settingsArray.push(parseInt(18, 10)); // @todo: flag -> settings
     settingsArray.push(parseInt(11, 10)); // mode, predefined in app was 0..10 @todo: check for custom
     settingsArray.push(time % 256); // time e.g. 30
     settingsArray.push(time / 256); // time e.g. 30

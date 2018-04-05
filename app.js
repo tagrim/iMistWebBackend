@@ -32,6 +32,7 @@ class App {
    */
   onDiscover(peripheral) {
     const { serviceUuids } = peripheral.advertisement;
+    // @todo: return all matching devices for UI
     serviceUuids.some(uuid => uuid === UUID_IMIST_PERIPTHERAL) && ConnectionService.use(peripheral);
   }
 }
