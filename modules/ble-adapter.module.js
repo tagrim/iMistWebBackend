@@ -11,20 +11,16 @@ class BleAdapter {
    */
   sendData(paramArrayList, characteristic) {
     const paramsCount = paramArrayList.length;
-    const byteArray = new Uint8Array(paramsCount);
-
-    let localStringBuffer = '';
+    const byteArray = Buffer.alloc(paramsCount);
 
     for (let i = 0; i < paramsCount; i++) {
-      byteArray[i] = parseInt(paramArrayList[i], 10);
-      localStringBuffer += `0x${this.toHexString(paramArrayList[i])},`; // @todo: for what purposes this stuff is needed?
+      byteArray.writeUInt8(paramArrayList[i], i);
     }
 
     let written = this.writeBuffer(byteArray, characteristic);
     let retry_requests = 3;
 
     if (!written && !!retry_requests) {
-
       const interval = setInterval(() => {
         if (written || !retry_requests) {
           clearInterval(interval);
@@ -39,7 +35,7 @@ class BleAdapter {
   /**
    * Send settings buffer to device and return result
    *
-   * @param {Uint8Array} buffer
+   * @param {Buffer} buffer
    * @param {Object} characteristic
    *
    * @returns {boolean}
@@ -47,8 +43,10 @@ class BleAdapter {
   writeBuffer(buffer, characteristic) {
     let written = false;
 
-    characteristic.write(buffer, false, response => { written = response; });
-    console.info(`Data sent: ${[].apply([], buffer).join(',')}, Response: ${written}`.grey);
+    characteristic.write(buffer, false, response => {
+      written = !response;
+      console.info(`Data sent: ${JSON.stringify(buffer.toJSON())}, Response: ${written}`.grey);
+    });
 
     return written;
   }

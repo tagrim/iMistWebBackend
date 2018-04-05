@@ -2,8 +2,7 @@ require('colors');
 const noble = require('noble');
 
 import { UUID_IMIST_PERIPTHERAL } from './config/constants.config';
-import ConnectionService from './services/characteristics.service';
-// import Debug from './services/debug.service';
+import ConnectionService from './services/connection.service';
 
 class App {
   constructor() {
@@ -32,8 +31,6 @@ class App {
    * @param peripheral
    */
   onDiscover(peripheral) {
-    // Debug.showFoundDevices(peripheral);
-
     const { serviceUuids } = peripheral.advertisement;
     serviceUuids.some(uuid => uuid === UUID_IMIST_PERIPTHERAL) && ConnectionService.use(peripheral);
   }

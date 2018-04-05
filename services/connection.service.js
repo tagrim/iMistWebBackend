@@ -1,6 +1,7 @@
 import {
   UUID_CHARACTERISTIC_READ, UUID_CHARACTERISTIC_WRITE, UUID_ENABLE_NOTIFICATION
 } from '../config/constants.config';
+import BleAdapter from '../modules/ble-adapter.module';
 
 class ConnectionService {
   constructor() {
@@ -70,9 +71,47 @@ class ConnectionService {
       buffer.writeUInt8(0x1, 0);
 
       descriptor && descriptor.writeValue(buffer, error => {
-        throw new Error(error);
+        if (error) {
+          throw new Error(error);
+        } else {
+          BleAdapter.sendData(this.modeToList({}), this.CHARACTERISTIC.WRITE);
+        }
       })
     });
+  }
+
+  /**
+   * Create settings list from predefined mode given
+   *
+   * @param {Object} mode
+   *
+   * @returns {Array} - paramArrayList for BLE.sendData
+   */
+  modeToList(mode) {
+    const dummyMode = {
+      time: 20,
+      fog: 100,
+      brightness: 100,
+      isLedAuto: 0,
+      red: 255,
+      green: 0,
+      blue: 0
+    };
+    const { red, green, blue, time, fog, isLedAuto, brightness } = dummyMode;
+    const settingsArray = [];
+
+    settingsArray.push(parseInt(18, 10));
+    settingsArray.push(parseInt(11, 10)); // mode, predefined in app was 0..10 @todo: check for custom
+    settingsArray.push(time % 256); // time e.g. 30
+    settingsArray.push(time / 256); // time e.g. 30
+    settingsArray.push(parseInt(brightness, 10)); // brightness
+    settingsArray.push(parseInt(fog, 10)); // fog intensity, e.g. 100, from 0 to 100
+    settingsArray.push(parseInt(isLedAuto, 10)); // isLedAuto 0 or 1
+    settingsArray.push(parseInt(red, 10)); // red color highlight
+    settingsArray.push(parseInt(green, 10)); // green color highlight
+    settingsArray.push(parseInt(blue, 10)); // blue color highlight
+
+    return settingsArray;
   }
 }
 
