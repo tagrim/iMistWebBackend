@@ -1,6 +1,16 @@
 import { DEBUG } from '../config/constants.config';
 
 class Debug {
+  /**
+   * Log found bluetooth devices
+   *
+   * @param {string} id
+   * @param {string} address
+   * @param {string} addressType
+   * @param {boolean} connectable
+   * @param {string} rssi
+   * @param {Object} advertisement
+   */
   showFoundDevices({ id, address, addressType, connectable, rssi, advertisement }) {
     DEBUG && console.log(`
       peripheral discovered (${id} with address <${address}, ${addressType}>,

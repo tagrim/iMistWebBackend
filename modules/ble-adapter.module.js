@@ -6,8 +6,8 @@ class BleAdapter {
   /**
    * Send data to device wrapper
    *
-   * @param paramArrayList
-   * @param characteristic
+   * @param {Array} paramArrayList
+   * @param {Object} characteristic
    */
   sendData(paramArrayList, characteristic) {
     const paramsCount = paramArrayList.length;
@@ -17,13 +17,13 @@ class BleAdapter {
 
     for (let i = 0; i < paramsCount; i++) {
       byteArray[i] = parseInt(paramArrayList[i], 10);
-      localStringBuffer += `0x${this.toHexString(paramArrayList[i])},`;
+      localStringBuffer += `0x${this.toHexString(paramArrayList[i])},`; // @todo: for what purposes this stuff is needed?
     }
 
     let written = this.writeBuffer(byteArray, characteristic);
+    let retry_requests = 3;
 
-    if (!written) {
-      let retry_requests = 3;
+    if (!written && !!retry_requests) {
 
       const interval = setInterval(() => {
         if (written || !retry_requests) {
@@ -39,8 +39,8 @@ class BleAdapter {
   /**
    * Send settings buffer to device and return result
    *
-   * @param buffer
-   * @param characteristic
+   * @param {Uint8Array} buffer
+   * @param {Object} characteristic
    *
    * @returns {boolean}
    */
@@ -48,7 +48,7 @@ class BleAdapter {
     let written = false;
 
     characteristic.write(buffer, false, response => { written = response; });
-    console.info(`Data sent: ${[].apply([], buffer).join(',')}, Response: ${written}`);
+    console.info(`Data sent: ${[].apply([], buffer).join(',')}, Response: ${written}`.grey);
 
     return written;
   }
@@ -56,7 +56,7 @@ class BleAdapter {
   /**
    * Number to Hex string
    *
-   * @param number
+   * @param {number} number - Number to be converted to hex
    *
    * @returns {string}
    */
