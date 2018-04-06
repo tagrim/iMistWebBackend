@@ -1,5 +1,6 @@
 import {
-  UUID_CHARACTERISTIC_READ, UUID_CHARACTERISTIC_WRITE, UUID_ENABLE_NOTIFICATION
+  UUID_CHARACTERISTIC_READ, UUID_CHARACTERISTIC_WRITE, UUID_ENABLE_NOTIFICATION,
+  BYTE_DIFFUSER_SETTINGS, BYTE_CUSTOM_MODE, DEBUG
 } from '../config/constants.config';
 import BleAdapter from '../modules/ble-adapter.module';
 
@@ -18,7 +19,7 @@ class ConnectionService {
    */
   use(peripheral) {
     peripheral.connect(() => {
-      console.log(`✔︎ connected to ${peripheral.advertisement.localName}`.bgGreen.black);
+      DEBUG && console.log(`✔︎ connected to ${peripheral.advertisement.localName}`.black.bgGreen);
 
       peripheral.discoverAllServicesAndCharacteristics((error, services, characteristics) => {
         this.mapCharacteristics(characteristics);
@@ -86,30 +87,31 @@ class ConnectionService {
    * @param {Object} mode
    *
    * @returns {Array} - paramArrayList for BLE.sendData
+   *
+   * @example payload:
+   * {
+   *  time: 20,
+   *  fog: 100,
+   *  brightness: 100,
+   *  isLedAuto: 0,
+   *  red: 255,
+   *  green: 0,
+   *  blue: 0
+   * }
    */
-  modeToList(mode) {
-    const dummyMode = {
-      time: 20,
-      fog: 100,
-      brightness: 100,
-      isLedAuto: 0,
-      red: 255,
-      green: 0,
-      blue: 0
-    };
-    const { red, green, blue, time, fog, isLedAuto, brightness } = dummyMode;
+  modeToList({ red = 255, green = 0, blue = 0, time = 20, fog = 100, isLedAuto = 0, brightness = 100 } = {}) {
     const settingsArray = [];
 
-    settingsArray.push(parseInt(18, 10)); // @todo: flag -> settings
-    settingsArray.push(parseInt(11, 10)); // mode, predefined in app was 0..10 @todo: check for custom
+    settingsArray.push(BYTE_DIFFUSER_SETTINGS);
+    settingsArray.push(BYTE_CUSTOM_MODE);
     settingsArray.push(time % 256); // time e.g. 30
     settingsArray.push(time / 256); // time e.g. 30
-    settingsArray.push(parseInt(brightness, 10)); // brightness
-    settingsArray.push(parseInt(fog, 10)); // fog intensity, e.g. 100, from 0 to 100
-    settingsArray.push(parseInt(isLedAuto, 10)); // isLedAuto 0 or 1
-    settingsArray.push(parseInt(red, 10)); // red color highlight
-    settingsArray.push(parseInt(green, 10)); // green color highlight
-    settingsArray.push(parseInt(blue, 10)); // blue color highlight
+    settingsArray.push(brightness); // brightness
+    settingsArray.push(fog); // fog intensity, e.g. 100, from 0 to 100
+    settingsArray.push(isLedAuto); // isLedAuto 0 or 1
+    settingsArray.push(red); // red color highlight
+    settingsArray.push(green); // green color highlight
+    settingsArray.push(blue); // blue color highlight
 
     return settingsArray;
   }

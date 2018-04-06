@@ -1,8 +1,6 @@
-class BleAdapter {
-  constructor() {
-    this.RETRY_INTERVAL = 300;
-  }
+import { DEBUG, BLE_RETRY_INTERVAL } from '../config/constants.config';
 
+class BleAdapter {
   /**
    * Send data to device wrapper
    *
@@ -22,13 +20,13 @@ class BleAdapter {
 
     if (!written && !!retry_requests) {
       const interval = setInterval(() => {
+        retry_requests--;
+        written = this.writeBuffer(byteArray, characteristic);
+
         if (written || !retry_requests) {
           clearInterval(interval);
         }
-
-        retry_requests--;
-        written = this.writeBuffer(byteArray, characteristic);
-      }, this.RETRY_INTERVAL);
+      }, BLE_RETRY_INTERVAL);
     }
   }
 
@@ -45,21 +43,10 @@ class BleAdapter {
 
     characteristic.write(buffer, false, response => {
       written = !response;
-      console.info(`Data sent: ${JSON.stringify(buffer.toJSON())}, Response: ${written}`.grey);
+      DEBUG && console.info(`Data sent: ${JSON.stringify(buffer.toJSON())}, Response: ${written}`.grey);
     });
 
     return written;
-  }
-
-  /**
-   * Number to Hex string
-   *
-   * @param {number} number - Number to be converted to hex
-   *
-   * @returns {string}
-   */
-  toHexString(number) {
-    return number.toString(16);
   }
 }
 

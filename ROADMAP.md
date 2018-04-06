@@ -1,0 +1,3 @@
+- Read settings saved in diffuser
+- Write specs documentation
+- Add more options to be controlled
