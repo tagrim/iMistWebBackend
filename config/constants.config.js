@@ -1,6 +1,7 @@
 // @Common
 export const DEBUG = true;
 export const BLE_RETRY_INTERVAL = 300;
+export const WEBAPI_PORT = 8080;
 
 // @DoNotChange
 export const UUID_IMIST_PERIPTHERAL = 'f501'; // iMist uuid

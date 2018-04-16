@@ -1,0 +1,11 @@
+export const API_ACTIONS = {
+  GET_CONFIG: 0,
+  SET_TIME: 1,
+  SET_BRIGHTNESS: 2,
+  SET_FOG: 3,
+  SET_LED_AUTO: 4,
+  SET_RGB: 5,
+  START_SCAN: 6,
+  STOP_SCAN: 7,
+
+};

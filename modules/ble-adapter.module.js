@@ -30,6 +30,10 @@ class BleAdapter {
     }
   }
 
+  async getData(characteristic) {
+    return await characteristic.read((error, data) => data);
+  }
+
   /**
    * Send settings buffer to device and return result
    *

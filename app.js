@@ -1,13 +1,18 @@
 require('colors');
 const noble = require('noble');
 
-import { UUID_IMIST_PERIPTHERAL } from './config/constants.config';
+import {DEBUG, UUID_IMIST_PERIPTHERAL} from './config/constants.config';
 import ConnectionService from './services/connection.service';
+import WebApi from './modules/web-api.module';
 
 class App {
   constructor() {
-    noble.on('stateChange', this.onStateChange);
-    noble.on('discover', this.onDiscover);
+    WebApi.listen();
+
+    if (DEBUG) {
+      noble.on('stateChange', this.onStateChange);
+      noble.on('discover', this.onDiscover);
+    }
   }
 
   /**
@@ -17,10 +22,10 @@ class App {
    */
   onStateChange(state) {
     if (state === 'poweredOn') {
-      console.log('◼︎ scan: start'.inverse);
+      console.log('⟳ scan: start'.inverse);
       noble.startScanning();
     } else {
-      console.log('◻︎ scan: stop'.inverse);
+      console.log('⤬︎ scan: stop'.inverse);
       noble.stopScanning();
     }
   }

@@ -19,7 +19,7 @@ class ConnectionService {
    */
   use(peripheral) {
     peripheral.connect(() => {
-      DEBUG && console.log(`✔︎ connected to ${peripheral.advertisement.localName}`.black.bgGreen);
+      DEBUG && console.log(`☺︎ connected to ${peripheral.advertisement.localName}`.green);
 
       peripheral.discoverAllServicesAndCharacteristics((error, services, characteristics) => {
         this.mapCharacteristics(characteristics);
